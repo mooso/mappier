@@ -50,11 +50,12 @@ namespace Mappier
 			using (var graphics = Graphics.FromImage(image))
 			{
 				var pen = new Pen(Color.White) { Width = 1 };
+				var transformation = GeometryDrawing.TranslateFromEnvelope(continentalBounds, image);
 				foreach (var state in _states)
 				{
 					if (continentalBounds.Contains(state.Geometry.EnvelopeInternal))
 					{
-						graphics.DrawPolygon(pen, state.Geometry.Coordinates.Select(c => ToPoint(c, continentalBounds, image)).ToArray());
+						GeometryDrawing.DrawGeometry(state.Geometry, pen, graphics, transformation);
 					}
 				}
 			}
@@ -101,13 +102,6 @@ namespace Mappier
 				maine.Geometry.Coordinates.Select(c => c.X).Max(),
 				florida.Geometry.Coordinates.Select(c => c.Y).Min(),
 				minnesota.Geometry.Coordinates.Select(c => c.Y).Max());
-		}
-
-		private static PointF ToPoint(Coordinate c, Envelope shapeBounds, Image targetImage)
-		{
-			return new PointF(
-				(float)((c.X - shapeBounds.MinX) * (targetImage.Width / shapeBounds.Width)),
-				(float)((shapeBounds.Height - c.Y + shapeBounds.MinY) * (targetImage.Height / shapeBounds.Height)));
 		}
 
 		private static void WriteStreamToStream(Stream source, Stream target)
