@@ -19,6 +19,21 @@ namespace Mappier
 			graphics.DrawPolygon(pen, points);
 		}
 
+		public static Image DrawGeometry(IGeometry geometry, Pen pen = null, Brush background = null, int width = 800)
+		{
+			pen = pen ?? new Pen(Color.Black);
+			background = background ?? new SolidBrush(Color.White);
+			var envelope = geometry.EnvelopeInternal;
+			var image = new Bitmap(width, (int)((envelope.Height * width) / envelope.Width));
+			using (var graphics = Graphics.FromImage(image))
+			{
+				var transformation = TranslateFromEnvelope(envelope, image);
+				graphics.FillRectangle(background, 0, 0, image.Width, image.Height);
+				DrawGeometry(geometry, pen, graphics, transformation);
+			}
+			return image;
+		}
+
 		public static Matrix TranslateFromEnvelope(Envelope envelope, Image image)
 		{
 			return TranslateFromEnvelope(envelope, new PointF(), new PointF(image.Width, image.Height));

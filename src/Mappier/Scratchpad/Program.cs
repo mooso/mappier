@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -14,14 +15,25 @@ namespace Scratchpad
 	{
 		static void Main(string[] args)
 		{
-			ShowContinentalUSA();
+			ShowCalifornia();
+		}
+
+		static void ShowCalifornia()
+		{
+			var usa = USA.Create2013USA();
+			var california = usa.States.Single(s => s.Name == "California");
+			DisplayTestImage(GeometryDrawing.DrawGeometry(california.Geometry), "california");
 		}
 
 		static void ShowContinentalUSA()
 		{
 			var usa = USA.Create2013USA();
-			var image = usa.DrawContinentalUSA();
-			var filePath = Path.Combine(GetScratchDir(), "usa_continental.gif");
+			DisplayTestImage(usa.DrawContinentalUSA(), "usa_continental");
+		}
+
+		private static void DisplayTestImage(Image image, string name)
+		{
+			var filePath = Path.Combine(GetScratchDir(), name + ".gif");
 			image.Save(filePath, ImageFormat.Gif);
 			Process.Start(filePath);
 		}
