@@ -15,7 +15,7 @@ namespace Scratchpad
 	{
 		static void Main(string[] args)
 		{
-			ShowCalifornia();
+			ShowContinentalUSA();
 		}
 
 		static void ShowCalifornia()

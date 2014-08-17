@@ -14,9 +14,26 @@ namespace Mappier
 	{
 		public static void DrawGeometry(IGeometry geometry, Pen pen, Graphics graphics, Matrix transformation)
 		{
-			PointF[] points = geometry.Coordinates.Select(c => new PointF((float)c.X, (float)c.Y)).ToArray();
-			transformation.TransformPoints(points);
-			graphics.DrawPolygon(pen, points);
+			switch (geometry.GeometryType)
+			{
+				case "MultiPolygon":
+					{
+						for (int i = 0; i < geometry.NumGeometries; i++)
+						{
+							DrawGeometry(geometry.GetGeometryN(i), pen, graphics, transformation);
+						}
+					}
+					break;
+				case "Polygon":
+					{
+						PointF[] points = geometry.Coordinates.Select(c => new PointF((float)c.X, (float)c.Y)).ToArray();
+						transformation.TransformPoints(points);
+						graphics.DrawPolygon(pen, points);
+					}
+					break;
+				default:
+					throw new NotImplementedException("Can't draw this geometry type: " + geometry.GeometryType);
+			}
 		}
 
 		public static Image DrawGeometry(IGeometry geometry, Pen pen = null, Brush background = null, int width = 800)
