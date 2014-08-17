@@ -49,7 +49,8 @@ namespace Mappier
 			var image = new Bitmap(width, (int)((continentalBounds.Height * width) / continentalBounds.Width));
 			using (var graphics = Graphics.FromImage(image))
 			{
-				var pen = new Pen(Color.White) { Width = 1 };
+				graphics.FillRectangle(new SolidBrush(Color.White), 0, 0, image.Width, image.Height);
+				var pen = new Pen(Color.Black) { Width = 1 };
 				var transformation = GeometryDrawing.TranslateFromEnvelope(continentalBounds, image);
 				foreach (var state in _states)
 				{
